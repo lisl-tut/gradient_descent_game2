@@ -4,7 +4,8 @@ var context = null;
 var num_point = null;
 var func_ary = null;
 var crt_pos = null;
-var blind = false;
+var move_count = null;
+var blind = null;
 
 function initialize(){
     canvas = document.getElementById('canvas1');
@@ -16,6 +17,8 @@ function initialize(){
     num_point = 100;
     func_ary = create_func_ary(1);
     crt_pos = getRandomInt(0, num_point-1);
+    move_count = 0;
+    blind = true;
 
     draw_function();
     draw_position();
@@ -25,7 +28,7 @@ function canvas_draw(){
     context.clearRect(0, 0, canvas.width, canvas.height);   //画面クリア
     draw_function();
     draw_position();
-    if (blind == false){
+    if (blind == true){
         draw_blind();
     }
 }
@@ -33,18 +36,24 @@ function canvas_draw(){
 /*=========================================================================*/
 
 function move_to_left(){
+    if (crt_pos == 0) return;
     crt_pos -= Number(document.getElementById('range1').value); // スライダーの値を取り出して左へ移動
     if (crt_pos < 0){
         crt_pos = 0;            // 一番左端を超えていた場合は左端に合わせる
     }
+    move_count++;               // 移動回数をインクリメント
+    document.getElementById('move_count').innerHTML = move_count; // 移動回数の表示を更新
     canvas_draw();              // 再描画
 }
 
 function move_to_right(){
+    if (crt_pos == num_point-1) return;
     crt_pos += Number(document.getElementById('range1').value); // スライダーの値を取り出して右へ移動
     if (crt_pos > num_point-1){
         crt_pos = num_point-1;  // 一番右端を超えていた場合は右端に合わせる
     }
+    move_count++;               // 移動回数をインクリメント
+    document.getElementById('move_count').innerHTML = move_count; // 移動回数の表示を更新
     canvas_draw();              // 再描画
 }
 
@@ -52,7 +61,7 @@ function move_to_right(){
 
 function draw_function(){
     context.beginPath();
-    context.strokeStyle = 'rgb(0, 255, 0)';
+    context.strokeStyle = 'rgb(255, 0, 255)';
     context.moveTo(func_ary[0][0], func_ary[1][0]);     // 1点目を打つ
     for(var i = 1; i < num_point; i++){
         context.lineTo(func_ary[0][i], func_ary[1][i]); // i点目に向けて線を引く
