@@ -2,42 +2,55 @@
 var canvas = null;
 var context = null;
 var num_point = null;
-var func_ary = null;
 var crt_pos = null;
 var move_count = null;
 var blind = null;
+var func_ary = null;
 
 function initialize(){
+    /* HTMLコンテンツの初期化 */
+    // クラスネームやコンテンツの中身，スタイルを変更する
+    document.getElementById("start").className="waves-effect waves-light btn";
+    document.getElementById("left").className="waves-effect waves-light btn disabled";
+    document.getElementById("right").className="waves-effect waves-light btn disabled";
+    document.getElementById("submit").className="waves-effect waves-light btn disabled";
+    document.getElementById("move_count").innerHTML = 0;
+    document.getElementById("answer").style.display="none";
+
+    /* グローバル変数の初期化 */
     canvas = document.getElementById('canvas1');
     if(!canvas || !canvas.getContext){
         console.log('error : can not load canvas');
         return false;
     }
-    context = canvas.getContext('2d');
-    num_point = 100;
-    func_ary = create_func_ary(1);
-    crt_pos = getRandomInt(0, num_point-1);
-    move_count = 0;
-    blind = true;
+    context = canvas.getContext('2d');                      // コンテキストの取得
+    context.clearRect(0, 0, canvas.width, canvas.height);   // 画面クリア
 
-    draw_function();
-    draw_position();
-}
-
-function canvas_draw(){
-    context.clearRect(0, 0, canvas.width, canvas.height);   //画面クリア
-    draw_function();
-    draw_position();
-    if (blind == true){
-        draw_blind();
-    }
+    num_point = 100;                        // 関数のサンプル点の数
+    func_ary = create_func_ary(1);          // 関数値の配列
+    crt_pos = getRandomInt(0, num_point-1); // ユーザーの現在地
+    move_count = 0;                         // 動いた回数
+    blind = true;                           // ブラインドをかけるか
 }
 
 /*=========================================================================*/
 
+function start_game(){
+    initialize();   // 初期化
+    // 難易度設定
+    if (document.getElementById('demo_switch').checked) blind = false; // DemoのときはブラインドOFF
+    canvas_draw();  // キャンバスの描画
+
+    /* ボタンの有効・無効の設定 */
+    document.getElementById("start").className="waves-effect waves-light btn disabled";
+    document.getElementById("left").className="waves-effect waves-light btn";
+    document.getElementById("right").className="waves-effect waves-light btn";
+    document.getElementById("submit").className="waves-effect waves-light btn";
+}
+
 function move_to_left(){
     if (crt_pos == 0) return;
-    crt_pos -= Number(document.getElementById('range1').value); // スライダーの値を取り出して左へ移動
+    crt_pos -= Number(document.getElementById('step_range').value); // スライダーの値を取り出して左へ移動
     if (crt_pos < 0){
         crt_pos = 0;            // 一番左端を超えていた場合は左端に合わせる
     }
@@ -48,7 +61,7 @@ function move_to_left(){
 
 function move_to_right(){
     if (crt_pos == num_point-1) return;
-    crt_pos += Number(document.getElementById('range1').value); // スライダーの値を取り出して右へ移動
+    crt_pos += Number(document.getElementById('step_range').value); // スライダーの値を取り出して右へ移動
     if (crt_pos > num_point-1){
         crt_pos = num_point-1;  // 一番右端を超えていた場合は右端に合わせる
     }
@@ -57,7 +70,32 @@ function move_to_right(){
     canvas_draw();              // 再描画
 }
 
+function submit_answer(){
+    /* ボタンの有効・無効の設定 */
+    document.getElementById("left").className="waves-effect waves-light btn disabled";
+    document.getElementById("right").className="waves-effect waves-light btn disabled";
+    document.getElementById("submit").className="waves-effect waves-light btn disabled";
+
+    /* 答えの表示 */
+    blind = false;  // ブラインドを外す
+    canvas_draw();  // 関数をブラインドなしで描画
+    document.getElementById("answer").style.display="block";  // 結果のボックスを表示
+}
+
+function next_game(){
+    initialize();   // 初期化
+}
+
 /*=========================================================================*/
+
+function canvas_draw(){
+    context.clearRect(0, 0, canvas.width, canvas.height);   //画面クリア
+    draw_function();    // 関数の描画
+    draw_position();    // 現在地の描画
+    if (blind == true){
+        draw_blind();   // ブラインドの描画
+    }
+}
 
 function draw_function(){
     context.beginPath();
