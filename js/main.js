@@ -21,7 +21,7 @@ function initialize(){
     /* グローバル変数の初期化 */
     canvas = document.getElementById('canvas1');
     if(!canvas || !canvas.getContext){
-        console.log('error : can not load canvas');
+        console.log('error : can not load canvas; @initialize');
         return false;
     }
     context = canvas.getContext('2d');                      // コンテキストの取得
@@ -96,11 +96,13 @@ function submit_answer(){
     context.stroke();   // 答えの位置に円を表示
 
     /* ボックスでの答え表示 */
-    if (crt_pos == ans_pos){
+    if (crt_pos == ans_pos)
         document.getElementById("result").innerHTML = "正解！！";
-    }
     else{
-        document.getElementById("result").innerHTML = "残念．．．";
+        if (Math.abs(crt_pos - ans_pos) < 3)
+            document.getElementById("result").innerHTML = "惜しい...！";
+        else
+            document.getElementById("result").innerHTML = "残念．．．";
     }
     document.getElementById("answer").style.display="block";  // 結果のボックスを表示
 }
@@ -133,12 +135,12 @@ function draw_function(){
 function draw_position(){
     context.beginPath();
     context.fillStyle = 'rgb(255, 0, 0)';
-    context.arc(func_ary[0][crt_pos], func_ary[1][crt_pos], 2, 0, Math.PI*2, false);
+    context.arc(func_ary[0][crt_pos], func_ary[1][crt_pos], 4, 0, Math.PI*2, false);
     context.fill();
 }
 
 function draw_blind(){
-    var slit_size = 7;
+    var slit_size = 8;
 
     /* 左側のブラインドの矩形 */
     context.beginPath();
@@ -154,13 +156,61 @@ function draw_blind(){
 
 /*=========================================================================*/
 
+function create_function(level){
+    if (level == 1){
+        var lm = getRandomInt(-4, 4); // local minimum
+        var func = function(x){
+            return (x - lm) * (x - lm);
+        }
+        return func;
+    }
+    else if (level == 2){
+        var lm1 = getRandomInt(1, 8);  // local minimum
+        var lm2 = getRandomInt(-8, 0); // local minimum
+        var sigma1 = Math.random()*0.18 + 0.02; // parameter
+        var sigma2 = Math.random()*0.18 + 0.02; // parameter
+        var amp1 = getRandomInt(190, 210);      // parameter
+        var amp2 = getRandomInt(190, 210);      // parameter
+        if (amp1 == amp2) amp1 += 1;
+        var func = function(x){
+            return x*x-amp1*Math.exp(-sigma1*(x-lm1)*(x-lm1))-amp2*Math.exp(-sigma2*(x-lm2)*(x-lm2));
+        }
+        return func;
+    }
+    else if (level == 3){
+        var lm1 = getRandomInt(4, 9);   // local minimum
+        var lm2 = getRandomInt(0, 4);   // local minimum
+        var lm3 = getRandomInt(-4, 0);  // local minimum
+        var lm4 = getRandomInt(-9, -4); // local minimum
+        var sigma1 = Math.random()*0.2 + 0.05;  // parameter
+        var sigma2 = Math.random()*0.2 + 0.05;  // parameter
+        var sigma3 = Math.random()*0.2 + 0.05;  // parameter
+        var sigma4 = Math.random()*0.2 + 0.05;  // parameter
+        var amp1 = getRandomInt(190, 210);      // parameter
+        var amp2 = getRandomInt(190, 210);      // parameter
+        var amp3 = getRandomInt(190, 210);      // parameter
+        var amp4 = getRandomInt(190, 210);      // parameter
+        var func = function(x){
+            return x*x-amp1*Math.exp(-sigma1*(x-lm1)*(x-lm1))-amp2*Math.exp(-sigma2*(x-lm2)*(x-lm2))-amp3*Math.exp(-sigma3*(x-lm3)*(x-lm3))-amp4*Math.exp(-sigma4*(x-lm4)*(x-lm4));
+        }
+        return func;
+    }
+    else {
+        console.log('error : level is not proper; @create_function');
+        return null;
+    }
+}
+
 function create_func_ary(level){
-    var x_min = -10;
-    var x_max = 10;
-    var cx_min = canvas.width*0.05;        // キャンバスのx軸の最小値
-    var cx_max = canvas.width*0.95;        // キャンバスのx軸の最大値
-    var cy_min = canvas.height*0.05;       // キャンバスのy軸の最小値
-    var cy_max = canvas.height*0.95;       // キャンバスのy軸の最大値
+    var func = create_function(level);  // 関数を取得
+    var x_min = -10;                    // 関数に代入するxの最小値
+    var x_max = 10;                     // 関数に代入するxの最大値
+    var cx_min = canvas.width*0.05;     // キャンバスのx軸の最小値
+    var cx_max = canvas.width*0.95;     // キャンバスのx軸の最大値
+    var cy_min = canvas.height*0.05;    // キャンバスのy軸の最小値
+    var cy_max = canvas.height*0.95;    // キャンバスのy軸の最大値
+
+    cy_min += Math.random()*150; // 最小点の位置を毎回ずらすことで難しくする
 
     /* 関数値の作成 */
     var ary_x = new Array(num_point); // x座標の配列の用意
@@ -171,7 +221,7 @@ function create_func_ary(level){
     for(var i = 0; i < num_point; i++){
         x = x_min + delta*i;            // x_minからi番目のx座標を求める
         ary_x[i] = cx_min + c_delta*i;  // 描画可能域中でのx座標を求める
-        ary_y[i] = x*x;                 // 関数値を計算
+        ary_y[i] = func(x);             // 関数値を計算
     }
 
     /* 関数値を描画可能域に合わせる */
