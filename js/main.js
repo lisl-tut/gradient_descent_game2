@@ -28,7 +28,6 @@ function initialize(){
     context.clearRect(0, 0, canvas.width, canvas.height);   // 画面クリア
 
     num_point = 100;                        // 関数のサンプル点の数
-    func_ary = create_func_ary(1);          // 関数値の配列
     crt_pos = getRandomInt(0, num_point-1); // ユーザーの現在地
     move_count = 0;                         // 動いた回数
 }
@@ -37,9 +36,17 @@ function initialize(){
 
 function start_game(){
     initialize();   // 初期化
-    // 難易度設定
+
+    /* 難易度設定 */
+    var level = 1;  // easyが選択されているものとする
+    if (document.getElementById('level_normal').checked) level = 2;
+    else if (document.getElementById('level_hard').checked) level = 3;
+    func_ary = create_func_ary(level); // 関数値の配列を獲得
+
+    /* ブラインド設定 */
     blind = document.getElementById('blind_switch').checked; // ブラインドを設定
     canvas_draw();  // キャンバスの描画
+
 
     /* ボタンの有効・無効の設定 */
     document.getElementById("start").className="waves-effect waves-light btn disabled";
