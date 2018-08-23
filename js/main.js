@@ -30,7 +30,6 @@ function initialize(){
     func_ary = create_func_ary(1);          // 関数値の配列
     crt_pos = getRandomInt(0, num_point-1); // ユーザーの現在地
     move_count = 0;                         // 動いた回数
-    blind = true;                           // ブラインドをかけるか
 }
 
 /*=========================================================================*/
@@ -38,7 +37,7 @@ function initialize(){
 function start_game(){
     initialize();   // 初期化
     // 難易度設定
-    if (document.getElementById('demo_switch').checked) blind = false; // DemoのときはブラインドOFF
+    blind = document.getElementById('blind_switch').checked; // ブラインドを設定
     canvas_draw();  // キャンバスの描画
 
     /* ボタンの有効・無効の設定 */
