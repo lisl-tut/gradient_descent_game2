@@ -171,7 +171,9 @@ function create_function(level){
         var sigma2 = Math.random()*0.18 + 0.02; // parameter
         var amp1 = getRandomInt(190, 210);      // parameter
         var amp2 = getRandomInt(190, 210);      // parameter
+
         if (amp1 == amp2) amp1 += 1;
+
         var func = function(x){
             return x*x-amp1*Math.exp(-sigma1*(x-lm1)*(x-lm1))-amp2*Math.exp(-sigma2*(x-lm2)*(x-lm2));
         }
@@ -182,16 +184,30 @@ function create_function(level){
         var lm2 = getRandomInt(0, 4);   // local minimum
         var lm3 = getRandomInt(-4, 0);  // local minimum
         var lm4 = getRandomInt(-9, -4); // local minimum
+        var lm5 = getRandomInt(-9, 9);  // local minimun
         var sigma1 = Math.random()*0.2 + 0.05;  // parameter
         var sigma2 = Math.random()*0.2 + 0.05;  // parameter
         var sigma3 = Math.random()*0.2 + 0.05;  // parameter
         var sigma4 = Math.random()*0.2 + 0.05;  // parameter
-        var amp1 = getRandomInt(190, 210);      // parameter
+        var amp1 = getRandomInt(195, 210);      // parameter
         var amp2 = getRandomInt(190, 210);      // parameter
         var amp3 = getRandomInt(190, 210);      // parameter
-        var amp4 = getRandomInt(190, 210);      // parameter
+        var amp4 = getRandomInt(195, 210);      // parameter
+
+        var min = Math.min(amp1, amp2, amp3, amp4);
+        var min_count = 0;
+        if (amp1 == min) min_count++;
+        if (amp2 == min) min_count++;
+        if (amp3 == min) min_count++;
+        if (amp4 == min) min_count++;
+        if (min_count >= 2){
+            if (amp1 == min)        amp1 += 1;
+            else if (amp2 == min)   amp2 += 1;
+            else                    amp3 += 1;
+        }
+
         var func = function(x){
-            return x*x-amp1*Math.exp(-sigma1*(x-lm1)*(x-lm1))-amp2*Math.exp(-sigma2*(x-lm2)*(x-lm2))-amp3*Math.exp(-sigma3*(x-lm3)*(x-lm3))-amp4*Math.exp(-sigma4*(x-lm4)*(x-lm4));
+            return (x-lm5)*(x-lm5)-amp1*Math.exp(-sigma1*(x-lm1)*(x-lm1))-amp2*Math.exp(-sigma2*(x-lm2)*(x-lm2))-amp3*Math.exp(-sigma3*(x-lm3)*(x-lm3))-amp4*Math.exp(-sigma4*(x-lm4)*(x-lm4));
         }
         return func;
     }
