@@ -1,7 +1,10 @@
+/* グローバル変数 */
 var canvas = null;
 var context = null;
+var num_point = null;
 var func_ary = null;
 var crt_pos = null;
+var blind = null;
 
 function initialize(){
     canvas = document.getElementById('canvas1');
@@ -10,30 +13,48 @@ function initialize(){
         return false;
     }
     context = canvas.getContext('2d');
-    func_ary = create_func_ary(1, -10, 10, 200);
-    crt_pos = getRandomInt(0, 199);
+    num_point = 200;
+    func_ary = create_func_ary(1);
+    crt_pos = getRandomInt(0, num_point-1);
 
     draw_function();
     draw_position();
 }
 
-function canvas_draw(demo){
+function canvas_draw(){
     context.clearRect(0, 0, canvas.width, canvas.height);   //画面クリア
     draw_function();
     draw_position();
-    if (demo == false){
+    if (blind == false){
         draw_blind();
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////
+/*=========================================================================*/
+
+function move_to_left(){
+    crt_pos -= Number(document.getElementById('range1').value); // スライダーの値を取り出して左へ移動
+    if (crt_pos < 0){
+        crt_pos = 0;            // 一番左端を超えていた場合は左端に合わせる
+    }
+    canvas_draw();              // 再描画
+}
+
+function move_to_right(){
+    crt_pos += Number(document.getElementById('range1').value); // スライダーの値を取り出して右へ移動
+    if (crt_pos > num_point-1){
+        crt_pos = num_point-1;  // 一番右端を超えていた場合は右端に合わせる
+    }
+    canvas_draw();              // 再描画
+}
+
+/*=========================================================================*/
 
 function draw_function(){
-    var num = func_ary[0].length;   // 点の数
     context.beginPath();
     context.strokeStyle = 'rgb(0, 255, 0)';
     context.moveTo(func_ary[0][0], func_ary[1][0]);     // 1点目を打つ
-    for(var i = 1; i < num; i++){
+    for(var i = 1; i < num_point; i++){
         context.lineTo(func_ary[0][i], func_ary[1][i]); // i点目に向けて線を引く
     }
     context.stroke();
@@ -52,9 +73,11 @@ function draw_blind(){
     // context.fillRect(x-size/2, y-size/2, size, size);
 }
 
-/////////////////////////////////////////////////////////////////////////////
+/*=========================================================================*/
 
-function create_func_ary(level, x_min, x_max, num_point){
+function create_func_ary(level){
+    var x_min = -10;
+    var x_max = 10;
     var cx_min = canvas.width*0.05;        // キャンバスのx軸の最小値
     var cx_max = canvas.width*0.95;        // キャンバスのx軸の最大値
     var cy_min = canvas.height*0.05;       // キャンバスのy軸の最小値
@@ -92,7 +115,7 @@ function create_func_ary(level, x_min, x_max, num_point){
     return [ary_x, ary_y]; // x,yの値を入れた配列を返却
 }
 
-/////////////////////////////////////////////////////////////////////////////
+/*=========================================================================*/
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random()*(max - min + 1)) + min;
