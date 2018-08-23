@@ -1,11 +1,11 @@
 /* グローバル変数 */
-var canvas = null;
-var context = null;
-var num_point = null;
-var crt_pos = null;
-var move_count = null;
-var blind = null;
-var func_ary = null;
+var canvas = null;      // キャンバスの本体
+var context = null;     // キャンバスのコンテキスト
+var num_point = null;   // 関数のサンプル点の個数
+var crt_pos = null;     // ユーザーの現在位置
+var move_count = null;  // 移動回数
+var blind = null;       // ブラインドをかけるかどうか
+var func_ary = null;    // 関数の値を格納する配列
 
 function initialize(){
     /* HTMLコンテンツの初期化 */
@@ -16,6 +16,7 @@ function initialize(){
     document.getElementById("submit").className="waves-effect waves-light btn disabled";
     document.getElementById("move_count").innerHTML = 0;
     document.getElementById("answer").style.display="none";
+    document.getElementById("result").innerHTML = "";
 
     /* グローバル変数の初期化 */
     canvas = document.getElementById('canvas1');
@@ -75,9 +76,25 @@ function submit_answer(){
     document.getElementById("right").className="waves-effect waves-light btn disabled";
     document.getElementById("submit").className="waves-effect waves-light btn disabled";
 
-    /* 答えの表示 */
+    /* 答えを求める */
+    ans_pos = func_ary[1].indexOf(Math.max.apply(null, func_ary[1]));
+    console.log(ans_pos);
+
+    /* グラフ上での答え表示 */
     blind = false;  // ブラインドを外す
     canvas_draw();  // 関数をブラインドなしで描画
+    context.beginPath();
+    context.strokeStyle = 'rgb(0, 0, 255)';
+    context.arc(func_ary[0][ans_pos], func_ary[1][ans_pos], 6, 0, Math.PI*2, false);
+    context.stroke();   // 答えの位置に円を表示
+
+    /* ボックスでの答え表示 */
+    if (crt_pos == ans_pos){
+        document.getElementById("result").innerHTML = "正解！！";
+    }
+    else{
+        document.getElementById("result").innerHTML = "残念．．．";
+    }
     document.getElementById("answer").style.display="block";  // 結果のボックスを表示
 }
 
