@@ -4,7 +4,7 @@ var context = null;
 var num_point = null;
 var func_ary = null;
 var crt_pos = null;
-var blind = null;
+var blind = false;
 
 function initialize(){
     canvas = document.getElementById('canvas1');
@@ -13,7 +13,7 @@ function initialize(){
         return false;
     }
     context = canvas.getContext('2d');
-    num_point = 200;
+    num_point = 100;
     func_ary = create_func_ary(1);
     crt_pos = getRandomInt(0, num_point-1);
 
@@ -68,9 +68,18 @@ function draw_position(){
 }
 
 function draw_blind(){
-    // context.beginPath();
-    // context.fillStyle = color;
-    // context.fillRect(x-size/2, y-size/2, size, size);
+    var slit_size = 7;
+
+    /* 左側のブラインドの矩形 */
+    context.beginPath();
+    context.fillStyle = 'rgb(10, 10, 10)';
+    context.fillRect(0, 0, func_ary[0][crt_pos] - slit_size, canvas.height);
+
+    /* 右側のブラインドの矩形 */
+    context.beginPath();
+    context.fillStyle = 'rgb(10, 10, 10)';
+    var hc = func_ary[0][crt_pos] + slit_size;
+    context.fillRect(hc, 0, canvas.width - hc, canvas.height);
 }
 
 /*=========================================================================*/
