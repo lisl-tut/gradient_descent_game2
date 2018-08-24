@@ -40,6 +40,9 @@ function initialize(){
     num_point = 100;                        // 関数のサンプル点の数
     crt_pos = getRandomInt(0, num_point-1); // ユーザーの現在地
     move_count = 0;                         // 動いた回数
+
+    window.sessionStorage.clear();
+    load_ranking();
 }
 
 /*=========================================================================*/
@@ -56,7 +59,6 @@ function start_game(){
     /* ブラインド設定 */
     blind = document.getElementById('blind_switch').checked; // ブラインドを設定
     canvas_draw();  // キャンバスの描画
-
 
     /* ボタンの有効・無効の設定 */
     document.getElementById("start").className="waves-effect waves-light btn disabled";
@@ -268,6 +270,56 @@ function create_func_ary(level){
     }
 
     return [ary_x, ary_y]; // x,yの値を入れた配列を返却
+}
+
+/*=========================================================================*/
+
+function load_ranking(){
+    var ranking;
+
+    /* データをキャッシュ上から読み込み */
+    ranking = JSON.parse(window.sessionStorage.getItem("ranking"));
+
+    /* データがキャッシュ上に存在しない場合，初期化 */
+    if (window.sessionStorage.getItem("ranking") == null){
+        var init_val = [["No name", 20], ["No name", 20], ["No name", 20]];
+        ranking = {"easy_ranking":init_val, "normal_ranking":init_val, "hard_ranking":init_val};
+        window.sessionStorage.setItem("ranking", ranking);
+    }
+
+    /* 表示 */
+    console.log(ranking)
+}
+
+function update_ranking(level, result){
+    /* ランキング名を取得 */
+    var ranking_name = null;
+    if (level == 1) ranking_name = "easy_ranking";
+    else if (level == 2) ranking_name = "normal_ranking";
+    else if (level == 3) ranking_name = "hard_ranking";
+
+    /* 結果とランキングを比較*/
+    var target_ranking = ranking[ranking_name];
+    var insert_index = null;
+    for (var i = target_ranking.length-1; i >= 0; i--){
+        if (result < target_ranking[i][1]) insert_index = i;
+        else break;
+    }
+    if (insert_index == null) return;   // 記録を超えていない場合は終了
+
+    /* ランキングを更新 */
+    for (var i = target_ranking.length-1; i > 0; i--){
+        target_ranking[i] = target_ranking[i-1];
+        if (insert_index == i-1){
+            target_ranking[i-1] = ["Name", result];
+            break;
+        }
+    }
+    ranking[ranking_name] = target_ranking;            // js上のデータを更新
+    window.sessionStorage.setItem("ranking", ranking); // キャッシュ上のデータを更新
+
+    /* 表示 */
+    console.log(ranking)
 }
 
 /*=========================================================================*/
