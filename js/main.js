@@ -165,7 +165,23 @@ function draw_blind(){
 }
 
 function play_history(){
+
+    var inloop = function(i){
+        console.log(his_pos[i]);
+        console.log(i);
+    };
+
+    var loop = function(i, num, ms){
+        if(i <= num){
+            inloop(i);
+            setTimeout(function(){loop(++i, num, ms)}, ms);
+        }
+    }
+
     console.log("playing history");
+    console.log(his_pos);
+    console.log(typeof inloop)
+    loop(0, his_pos.length, 500);
     next_game();
 }
 
