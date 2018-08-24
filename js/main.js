@@ -123,8 +123,12 @@ function next_game(){
 
 /*=========================================================================*/
 
+function clear(){
+    context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
 function canvas_draw(){
-    context.clearRect(0, 0, canvas.width, canvas.height);   //画面クリア
+    clear()             //画面クリア
     draw_function();    // 関数の描画
     draw_position(crt_pos);    // 現在地の描画
     if (blind == true){
@@ -177,9 +181,6 @@ function play_history(){
         }
     }
 
-    console.log("playing history");
-    console.log(his_pos);
-    console.log(typeof inloop)
     loop(0, his_pos.length-1, 500);
 }
 
