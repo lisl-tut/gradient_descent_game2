@@ -4,7 +4,6 @@ var context = null;     // キャンバスのコンテキスト
 var num_point = null;   // 関数のサンプル点の個数
 var crt_pos = null;     // ユーザーの現在位置
 var his_pos = null;     // ユーザーの位置の履歴
-var move_count = null;  // 移動回数
 var blind = null;       // ブラインドをかけるかどうか
 var func_ary = null;    // 関数の値を格納する配列
 
@@ -40,8 +39,7 @@ function initialize(){
 
     num_point = 100;                        // 関数のサンプル点の数
     crt_pos = getRandomInt(0, num_point-1); // ユーザーの現在地
-    his_pos = [crt_pos];
-    move_count = 0;                         // 動いた回数
+    his_pos = [crt_pos];                    // ユーザーの位置の履歴
 }
 
 /*=========================================================================*/
@@ -73,8 +71,8 @@ function move_to_left(){
     if (crt_pos < 0){
         crt_pos = 0;            // 一番左端を超えていた場合は左端に合わせる
     }
-    move_count++;               // 移動回数をインクリメント
-    document.getElementById('move_count').innerHTML = move_count; // 移動回数の表示を更新
+    his_pos.push(crt_pos);    // 移動履歴に追加
+    document.getElementById('move_count').innerHTML = his_pos.length - 1; // 移動回数の表示を更新
     canvas_draw();              // 再描画
 }
 
@@ -84,8 +82,8 @@ function move_to_right(){
     if (crt_pos > num_point-1){
         crt_pos = num_point-1;  // 一番右端を超えていた場合は右端に合わせる
     }
-    move_count++;               // 移動回数をインクリメント
-    document.getElementById('move_count').innerHTML = move_count; // 移動回数の表示を更新
+    his_pos.push(crt_pos);    // 移動履歴に追加
+    document.getElementById('move_count').innerHTML = his_pos.length - 1; // 移動回数の表示を更新
     canvas_draw();              // 再描画
 }
 
