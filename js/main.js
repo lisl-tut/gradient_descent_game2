@@ -1,8 +1,9 @@
-/* グローバル変数 */
+﻿/* グローバル変数 */
 var canvas = null;      // キャンバスの本体
 var context = null;     // キャンバスのコンテキスト
 var num_point = null;   // 関数のサンプル点の個数
 var crt_pos = null;     // ユーザーの現在位置
+var his_pos = null;     // ユーザーの位置の履歴
 var move_count = null;  // 移動回数
 var blind = null;       // ブラインドをかけるかどうか
 var func_ary = null;    // 関数の値を格納する配列
@@ -39,6 +40,7 @@ function initialize(){
 
     num_point = 100;                        // 関数のサンプル点の数
     crt_pos = getRandomInt(0, num_point-1); // ユーザーの現在地
+    his_pos = [crt_pos];
     move_count = 0;                         // 動いた回数
 }
 
@@ -162,6 +164,11 @@ function draw_blind(){
     context.fillStyle = 'rgb(10, 10, 10)';
     var hc = func_ary[0][crt_pos] + slit_size;
     context.fillRect(hc, 0, canvas.width - hc, canvas.height);
+}
+
+function play_history(){
+	console.log("playing history");
+	next_game();
 }
 
 /*=========================================================================*/
