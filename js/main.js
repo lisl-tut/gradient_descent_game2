@@ -165,8 +165,8 @@ function draw_blind(){
 }
 
 function play_history(){
-	console.log("playing history");
-	next_game();
+    console.log("playing history");
+    next_game();
 }
 
 /*=========================================================================*/
