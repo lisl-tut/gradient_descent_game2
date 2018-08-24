@@ -100,10 +100,7 @@ function submit_answer(){
     /* グラフ上での答え表示 */
     blind = false;  // ブラインドを外す
     canvas_draw();  // 関数をブラインドなしで描画
-    context.beginPath();
-    context.strokeStyle = 'rgb(0, 0, 255)';
-    context.arc(func_ary[0][ans_pos], func_ary[1][ans_pos], 6, 0, Math.PI*2, false);
-    context.stroke();   // 答えの位置に円を表示
+    draw_answer();  // 答えの場所を描画
 
     /* ボックスでの答え表示 */
     if (crt_pos == ans_pos)
@@ -166,6 +163,13 @@ function draw_blind(){
     context.fillStyle = 'rgb(10, 10, 10)';
     var hc = func_ary[0][crt_pos] + slit_size;
     context.fillRect(hc, 0, canvas.width - hc, canvas.height);
+}
+
+function draw_answer(){
+    context.beginPath();
+    context.strokeStyle = 'rgb(0, 0, 255)';
+    context.arc(func_ary[0][ans_pos], func_ary[1][ans_pos], 6, 0, Math.PI*2, false);
+    context.stroke();   // 答えの位置に円を表示
 }
 
 function play_history(){
