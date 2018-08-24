@@ -177,6 +177,7 @@ function play_history(){
     var inloop = function(i){
         clear();
         draw_function();
+        draw_answer();
         draw_position(his_pos[i]);
     };
 
