@@ -25,13 +25,13 @@ function initialize(){
         console.log('error : can not load canvas; @initialize');
         return false;
     }
-    (function(){
-    function canvas_resize(){
-        document.getElementById('canvas1').setAttribute('width', window.innerWidth*0.42);
-        document.getElementById('canvas1').setAttribute('height', window.innerHeight*0.5);
-    }
-    window.addEventListener('resize', canvas_resize, false);
-    canvas_resize();
+    (function(){    // キャンバスサイズの設定(分割したほうがいいかも...)
+        function canvas_resize(){
+            document.getElementById('canvas1').setAttribute('width', window.innerWidth*0.42);
+            document.getElementById('canvas1').setAttribute('height', window.innerHeight*0.5);
+        }
+        window.addEventListener('resize', canvas_resize, false);
+        canvas_resize();
     })();
 
     context = canvas.getContext('2d');                      // コンテキストの取得
