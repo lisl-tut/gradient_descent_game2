@@ -126,7 +126,7 @@ function next_game(){
 function canvas_draw(){
     context.clearRect(0, 0, canvas.width, canvas.height);   //画面クリア
     draw_function();    // 関数の描画
-    draw_position();    // 現在地の描画
+    draw_position(crt_pos);    // 現在地の描画
     if (blind == true){
         draw_blind();   // ブラインドの描画
     }
@@ -142,10 +142,10 @@ function draw_function(){
     context.stroke();
 }
 
-function draw_position(){
+function draw_position(pos){
     context.beginPath();
     context.fillStyle = 'rgb(255, 0, 0)';
-    context.arc(func_ary[0][crt_pos], func_ary[1][crt_pos], 4, 0, Math.PI*2, false);
+    context.arc(func_ary[0][pos], func_ary[1][pos], 4, 0, Math.PI*2, false);
     context.fill();
 }
 
