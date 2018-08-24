@@ -128,10 +128,10 @@ function clear(){
 }
 
 function canvas_draw(){
-    clear()             //画面クリア
+    clear();            //画面クリア
     draw_function();    // 関数の描画
     draw_position(crt_pos);    // 現在地の描画
-    if (blind == true){
+    if (blind){
         draw_blind();   // ブラインドの描画
     }
 }
@@ -171,7 +171,9 @@ function draw_blind(){
 function play_history(){
 
     var inloop = function(i){
-        console.log(his_pos[i]);
+        clear();
+        draw_function();
+        draw_position(his_pos[i]);
     };
 
     var loop = function(i, num, ms){
