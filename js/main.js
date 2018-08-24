@@ -7,6 +7,7 @@ var move_count = null;  // 移動回数
 var blind = null;       // ブラインドをかけるかどうか
 var func_ary = null;    // 関数の値を格納する配列
 
+
 function initialize(){
     /* HTMLコンテンツの初期化 */
     // クラスネームやコンテンツの中身，スタイルを変更する
@@ -24,6 +25,15 @@ function initialize(){
         console.log('error : can not load canvas; @initialize');
         return false;
     }
+    (function(){
+    function canvas_resize(){
+        document.getElementById('canvas1').setAttribute('width', window.innerWidth*0.42);
+        document.getElementById('canvas1').setAttribute('height', window.innerHeight*0.5);
+    }
+    window.addEventListener('resize', canvas_resize, false);
+    canvas_resize();
+    })();
+
     context = canvas.getContext('2d');                      // コンテキストの取得
     context.clearRect(0, 0, canvas.width, canvas.height);   // 画面クリア
 

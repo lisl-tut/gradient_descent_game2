@@ -33,7 +33,9 @@
         <div class="card">
           <div class="card-content">
             <span class="card-title">Display</span>
-            <canvas id="canvas1" width="800" height="450" style="border:solid 1px #AAA"></canvas>
+            <div style="width:100%; height:100%;">
+              <canvas id="canvas1" style="border:solid 1px #AAA"></canvas>
+            </div>
           </div>
           <div class="card-action">
             <div class="row">
@@ -47,7 +49,7 @@
                 <div class="switch">
                     <label>
                     Off
-                    <input type="checkbox" id="blind_switch">
+                    <input type="checkbox" id="blind_switch" checked="checked">
                     <span class="lever"></span>
                     On
                   </label>
@@ -57,7 +59,7 @@
                 <div>難易度</div>
                 <form>
                   <label>
-                    <input class="with-gap" name="group1" type="radio" id="level_easy"/>
+                    <input class="with-gap" name="group1" type="radio" id="level_easy" checked="checked" />
                     <span>Easy</span>
                   </label>
                   <label>
@@ -65,7 +67,7 @@
                     <span>Normal</span>
                   </label>
                   <label>
-                    <input class="with-gap" name="group1" type="radio" id="level_hard" checked="checked" />
+                    <input class="with-gap" name="group1" type="radio" id="level_hard"/>
                     <span>Hard</span>
                   </label>
                 </form>
@@ -112,6 +114,41 @@
                 <a id="next" class="waves-effect waves-light btn" href="javascript:next_game()">OK</a>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      <div class="col s3">
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">ゲームのやり方</span>
+            <p>(1) 難易度を決めてゲーム開始！</p>
+            <p>(2) 左右に動いて一番低い位置に辿り着こう</p>
+            <p>　ステップ幅を調節して移動回数は出来るだけ少なくしよう</p>
+            <p>(3) 一番低い位置に着いたと思ったら「完了」を押してね</p>
+            <div style="padding: 10px 0px;"><hr></div>
+            <p style="font-size:1.5em;">ランキング</p>
+          </div>
+        </div>
+      </div>
+      <div class="col s3">
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">勾配降下法とは</span>
+            <p>勾配降下法(Gradient Descent)とは機械学習において機械が学習するためのアルゴリズムです．</p>
+            <p>「損失関数」を最小にするパラメータを，損失関数の「勾配」(傾き) を頼りに探す戦略のことを指します．</p>
+            <br>
+            <p style="font-size:1.4em; padding:5px 0px;">イメージ</p>
+            <p>料理で例えますと</p>
+            <div style="padding: 10px 0px;">
+              <p>　　損失関数︰料理の不味さ</p>
+              <p>　パラメータ︰塩を入れる量</p>
+            </div>
+            <p>塩を入れる量にも最適な量があります．機械学習ではまず「不味さ」の数理モデルを立てて，ここから計算した勾配を用いて「不味さ」の最小となる塩の量を探します．</p>
+            <p style="padding-top: 5px;">何回も料理を作り直すのは手間ですから，できるだけ少ない回数でできるだけ最適な量を求めることが目標となります．</p>
+            <br>
+            <p style="font-size:1.4em; padding:5px 0px;">実際の問題では</p>
+            <p>実際には塩の量以外にも，砂糖の量や水の量，火加減など様々な「パラメータ」が存在します．これらを一度に学習し，最適値を求めるのは非常に困難になります．</p>
+            <p style="padding-top: 5px;">このような中で，できるだけ少ない回数で，できるだけ良い結果を出せるアルゴリズムを考えるのが研究の対象となります．</p>
           </div>
         </div>
       </div>
