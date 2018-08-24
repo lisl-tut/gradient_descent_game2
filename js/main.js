@@ -168,7 +168,6 @@ function play_history(){
 
     var inloop = function(i){
         console.log(his_pos[i]);
-        console.log(i);
     };
 
     var loop = function(i, num, ms){
@@ -181,8 +180,7 @@ function play_history(){
     console.log("playing history");
     console.log(his_pos);
     console.log(typeof inloop)
-    loop(0, his_pos.length, 500);
-    next_game();
+    loop(0, his_pos.length-1, 500);
 }
 
 /*=========================================================================*/
