@@ -275,20 +275,22 @@ function create_func_ary(level){
 /*=========================================================================*/
 
 function load_ranking(){
-    var ranking;
+    var ranking_l;
 
     /* データをキャッシュ上から読み込み */
-    ranking = JSON.parse(window.sessionStorage.getItem("ranking"));
+    ranking_l = JSON.parse(window.sessionStorage.getItem("ranking"));
 
     /* データがキャッシュ上に存在しない場合，初期化 */
     if (window.sessionStorage.getItem("ranking") == null){
         var init_val = [["No name", 20], ["No name", 20], ["No name", 20]];
-        ranking = {"easy_ranking":init_val, "normal_ranking":init_val, "hard_ranking":init_val};
-        window.sessionStorage.setItem("ranking", ranking);
+        ranking_l = {"easy_ranking":init_val, "normal_ranking":init_val, "hard_ranking":init_val};
+        window.sessionStorage.setItem("ranking", ranking_l);
     }
 
     /* 表示 */
-    console.log(ranking)
+    console.log(ranking_l)
+
+    return ranking_l;
 }
 
 function update_ranking(level, result){
