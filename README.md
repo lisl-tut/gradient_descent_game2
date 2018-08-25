@@ -14,7 +14,7 @@
 ## Demo
 ![demo](https://raw.githubusercontent.com/lisl-tut/gradient_descent_game2/media/media/media.gif)
 
-まだ完成していません
+ほんの少ししかない傾きの情報から、一番低い位置に赤い点を持っていきましょう。
 
 ## Requirement
 - JavaScriptが動作するブラウザ
