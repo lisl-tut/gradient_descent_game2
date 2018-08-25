@@ -12,7 +12,7 @@
 - 自分の動きをリプレイで確認し、無駄な動作があることを確認。
 
 ## Demo
-![demo](https://1.bp.blogspot.com/-d3vDLBoPktU/WvQHWMBRhII/AAAAAAABL6E/Grg-XGzr9jEODAxkRcbqIXu-mFA9gTp3wCLcBGAs/s800/internet_404_page_not_found.png)
+![demo](https://raw.githubusercontent.com/lisl-tut/gradient_descent_game2/media/media/media.gif)
 
 まだ完成していません
 
