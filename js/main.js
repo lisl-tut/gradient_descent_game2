@@ -1,9 +1,9 @@
-/* グローバル変数 */
+﻿/* グローバル変数 */
 var canvas = null;      // キャンバスの本体
 var context = null;     // キャンバスのコンテキスト
 var num_point = null;   // 関数のサンプル点の個数
 var crt_pos = null;     // ユーザーの現在位置
-var move_count = null;  // 移動回数
+var his_pos = null;     // ユーザーの位置の履歴
 var blind = null;       // ブラインドをかけるかどうか
 var func_ary = null;    // 関数の値を格納する配列
 
@@ -39,7 +39,7 @@ function initialize(){
 
     num_point = 100;                        // 関数のサンプル点の数
     crt_pos = getRandomInt(0, num_point-1); // ユーザーの現在地
-    move_count = 0;                         // 動いた回数
+    his_pos = [crt_pos];                    // ユーザーの位置の履歴
 
     window.sessionStorage.clear();
     load_ranking();
@@ -73,8 +73,8 @@ function move_to_left(){
     if (crt_pos < 0){
         crt_pos = 0;            // 一番左端を超えていた場合は左端に合わせる
     }
-    move_count++;               // 移動回数をインクリメント
-    document.getElementById('move_count').innerHTML = move_count; // 移動回数の表示を更新
+    his_pos.push(crt_pos);    // 移動履歴に追加
+    document.getElementById('move_count').innerHTML = his_pos.length - 1; // 移動回数の表示を更新
     canvas_draw();              // 再描画
 }
 
@@ -84,8 +84,8 @@ function move_to_right(){
     if (crt_pos > num_point-1){
         crt_pos = num_point-1;  // 一番右端を超えていた場合は右端に合わせる
     }
-    move_count++;               // 移動回数をインクリメント
-    document.getElementById('move_count').innerHTML = move_count; // 移動回数の表示を更新
+    his_pos.push(crt_pos);    // 移動履歴に追加
+    document.getElementById('move_count').innerHTML = his_pos.length - 1; // 移動回数の表示を更新
     canvas_draw();              // 再描画
 }
 
@@ -102,10 +102,7 @@ function submit_answer(){
     /* グラフ上での答え表示 */
     blind = false;  // ブラインドを外す
     canvas_draw();  // 関数をブラインドなしで描画
-    context.beginPath();
-    context.strokeStyle = 'rgb(0, 0, 255)';
-    context.arc(func_ary[0][ans_pos], func_ary[1][ans_pos], 6, 0, Math.PI*2, false);
-    context.stroke();   // 答えの位置に円を表示
+    draw_answer();  // 答えの場所を描画
 
     /* ボックスでの答え表示 */
     if (crt_pos == ans_pos)
@@ -125,11 +122,15 @@ function next_game(){
 
 /*=========================================================================*/
 
+function clear(){
+    context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
 function canvas_draw(){
-    context.clearRect(0, 0, canvas.width, canvas.height);   //画面クリア
+    clear();            //画面クリア
     draw_function();    // 関数の描画
-    draw_position();    // 現在地の描画
-    if (blind == true){
+    draw_position(crt_pos);    // 現在地の描画
+    if (blind){
         draw_blind();   // ブラインドの描画
     }
 }
@@ -144,10 +145,10 @@ function draw_function(){
     context.stroke();
 }
 
-function draw_position(){
+function draw_position(pos){
     context.beginPath();
     context.fillStyle = 'rgb(255, 0, 0)';
-    context.arc(func_ary[0][crt_pos], func_ary[1][crt_pos], 4, 0, Math.PI*2, false);
+    context.arc(func_ary[0][pos], func_ary[1][pos], 4, 0, Math.PI*2, false);
     context.fill();
 }
 
@@ -164,6 +165,32 @@ function draw_blind(){
     context.fillStyle = 'rgb(10, 10, 10)';
     var hc = func_ary[0][crt_pos] + slit_size;
     context.fillRect(hc, 0, canvas.width - hc, canvas.height);
+}
+
+function draw_answer(){
+    context.beginPath();
+    context.strokeStyle = 'rgb(0, 0, 255)';
+    context.arc(func_ary[0][ans_pos], func_ary[1][ans_pos], 6, 0, Math.PI*2, false);
+    context.stroke();   // 答えの位置に円を表示
+}
+
+function play_history(){
+
+    var inloop = function(i){
+        clear();
+        draw_function();
+        draw_answer();
+        draw_position(his_pos[i]);
+    };
+
+    var loop = function(i, num, ms){
+        if(i <= num){
+            inloop(i);
+            setTimeout(function(){loop(++i, num, ms)}, ms);
+        }
+    }
+
+    loop(0, his_pos.length-1, 500);
 }
 
 /*=========================================================================*/
