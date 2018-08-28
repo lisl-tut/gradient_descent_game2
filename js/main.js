@@ -48,8 +48,6 @@ function initialize(){
 /*=========================================================================*/
 
 function start_game(){
-    initialize();   // 初期化
-
     /* 難易度設定 */
     var level = 1;  // easyが選択されているものとする
     if (document.getElementById('level_normal').checked) level = 2;
@@ -58,7 +56,7 @@ function start_game(){
 
     /* ブラインド設定 */
     blind = document.getElementById('blind_switch').checked; // ブラインドを設定
-    canvas_draw();  // キャンバスの描画
+    canvas_draw(crt_pos);  // キャンバスの描画
 
     /* ボタンの有効・無効の設定 */
     document.getElementById("start").className="waves-effect waves-light btn disabled";
@@ -71,11 +69,11 @@ function move_to_left(){
     if (crt_pos == 0) return;
     crt_pos -= Number(document.getElementById('step_range').value); // スライダーの値を取り出して左へ移動
     if (crt_pos < 0){
-        crt_pos = 0;            // 一番左端を超えていた場合は左端に合わせる
+        crt_pos = 0;        // 一番左端を超えていた場合は左端に合わせる
     }
-    his_pos.push(crt_pos);    // 移動履歴に追加
+    his_pos.push(crt_pos);  // 移動履歴に追加
     document.getElementById('move_count').innerHTML = his_pos.length - 1; // 移動回数の表示を更新
-    canvas_draw();              // 再描画
+    canvas_draw(crt_pos);   // 再描画
 }
 
 function move_to_right(){
@@ -84,9 +82,9 @@ function move_to_right(){
     if (crt_pos > num_point-1){
         crt_pos = num_point-1;  // 一番右端を超えていた場合は右端に合わせる
     }
-    his_pos.push(crt_pos);    // 移動履歴に追加
+    his_pos.push(crt_pos);      // 移動履歴に追加
     document.getElementById('move_count').innerHTML = his_pos.length - 1; // 移動回数の表示を更新
-    canvas_draw();              // 再描画
+    canvas_draw(crt_pos);       // 再描画
 }
 
 function submit_answer(){
@@ -100,9 +98,9 @@ function submit_answer(){
     console.log(ans_pos);
 
     /* グラフ上での答え表示 */
-    blind = false;  // ブラインドを外す
-    canvas_draw();  // 関数をブラインドなしで描画
-    draw_answer();  // 答えの場所を描画
+    blind = false;        // ブラインドを外す
+    canvas_draw(crt_pos); // 関数をブラインドなしで描画
+    draw_answer();        // 答えの場所を描画
 
     /* ボックスでの答え表示 */
     if (crt_pos == ans_pos)
@@ -113,7 +111,7 @@ function submit_answer(){
         else
             document.getElementById("result").innerHTML = "残念．．．";
     }
-    document.getElementById("answer").style.display="block";  // 結果のボックスを表示
+    document.getElementById("answer").style.display="block";  // 結果の文字ボックスを表示
 }
 
 function next_game(){
@@ -122,16 +120,12 @@ function next_game(){
 
 /*=========================================================================*/
 
-function clear(){
-    context.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-function canvas_draw(){
-    clear();            //画面クリア
-    draw_function();    // 関数の描画
-    draw_position(crt_pos);    // 現在地の描画
+function canvas_draw(position){
+    context.clearRect(0, 0, canvas.width, canvas.height); //画面クリア
+    draw_function();            // 関数の描画
+    draw_position(position);    // 現在地の描画
     if (blind){
-        draw_blind();   // ブラインドの描画
+        draw_blind();           // ブラインドの描画
     }
 }
 
@@ -174,15 +168,14 @@ function draw_answer(){
     context.stroke();   // 答えの位置に円を表示
 }
 
-function play_history(){
-
+function draw_history(){
+    /* ループの中身 */
     var inloop = function(i){
-        clear();
-        draw_function();
+        canvas_draw(his_pos[i]);
         draw_answer();
-        draw_position(his_pos[i]);
     };
 
+    /* ループ関数 */
     var loop = function(i, num, ms){
         if(i <= num){
             inloop(i);
@@ -190,6 +183,7 @@ function play_history(){
         }
     }
 
+    /* ループの実行 */
     loop(0, his_pos.length-1, 500);
 }
 
