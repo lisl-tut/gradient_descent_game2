@@ -5,7 +5,9 @@ var num_point = null;   // 関数のサンプル点の個数
 var crt_pos = null;     // ユーザーの現在位置
 var his_pos = null;     // ユーザーの位置の履歴
 var blind = null;       // ブラインドをかけるかどうか
+var level = null;       // 問題の難易度
 var func_ary = null;    // 関数の値を格納する配列
+var ans_pos = null;     // 最小解の答えの位置
 
 
 function initialize(){
@@ -28,7 +30,7 @@ function initialize(){
     (function(){    // キャンバスサイズの設定(分割したほうがいいかも...)
         function canvas_resize(){
             document.getElementById('canvas1').setAttribute('width', window.innerWidth*0.42);
-            document.getElementById('canvas1').setAttribute('height', window.innerHeight*0.5);
+            document.getElementById('canvas1').setAttribute('height', window.innerHeight*0.42);
         }
         window.addEventListener('resize', canvas_resize, false);
         canvas_resize();
@@ -42,14 +44,14 @@ function initialize(){
     his_pos = [crt_pos];                    // ユーザーの位置の履歴
 
     window.sessionStorage.clear();
-    load_ranking();
+    init_ranking();
 }
 
 /*=========================================================================*/
 
 function start_game(){
     /* 難易度設定 */
-    var level = 1;  // easyが選択されているものとする
+    level = 1;  // easyが選択されているものとする
     if (document.getElementById('level_normal').checked) level = 2;
     else if (document.getElementById('level_hard').checked) level = 3;
     func_ary = create_func_ary(level); // 関数値の配列を獲得
@@ -95,12 +97,11 @@ function submit_answer(){
 
     /* 答えを求める */
     ans_pos = func_ary[1].indexOf(Math.max.apply(null, func_ary[1]));
-    console.log(ans_pos);
 
     /* グラフ上での答え表示 */
     blind = false;        // ブラインドを外す
     canvas_draw(crt_pos); // 関数をブラインドなしで描画
-    draw_answer();        // 答えの場所を描画
+    draw_answer(); // 答えの場所を描画
 
     /* ボックスでの答え表示 */
     if (crt_pos == ans_pos)
@@ -115,7 +116,11 @@ function submit_answer(){
 }
 
 function next_game(){
-    initialize();   // 初期化
+    /* ランキングの更新 */
+    update_ranking();
+
+    /* 初期化 */
+    initialize();
 }
 
 /*=========================================================================*/
@@ -295,54 +300,70 @@ function create_func_ary(level){
 
 /*=========================================================================*/
 
-function load_ranking(){
-    var ranking_l;
-
+function init_ranking(){
     /* データをキャッシュ上から読み込み */
-    ranking_l = JSON.parse(window.sessionStorage.getItem("ranking"));
+    ranking = JSON.parse(window.sessionStorage.getItem("ranking"));
 
     /* データがキャッシュ上に存在しない場合，初期化 */
-    if (window.sessionStorage.getItem("ranking") == null){
+    if (ranking == null){
         var init_val = [["No name", 20], ["No name", 20], ["No name", 20]];
-        ranking_l = {"easy_ranking":init_val, "normal_ranking":init_val, "hard_ranking":init_val};
-        window.sessionStorage.setItem("ranking", ranking_l);
+        ranking = {"ranking_easy":init_val, "ranking_normal":init_val, "ranking_hard":init_val};
+        window.sessionStorage.setItem("ranking", ranking);
     }
 
-    /* 表示 */
-    console.log(ranking_l)
-
-    return ranking_l;
+    /* ランキングデータを表示 */
+    show_ranking();
 }
 
-function update_ranking(level, result){
+function update_ranking(){
+    if (ans_pos != crt_pos) return;   // 正解していない場合は終了
+    var move_count = his_pos.length - 1; // 合計の移動回数を計算
+
     /* ランキング名を取得 */
     var ranking_name = null;
-    if (level == 1) ranking_name = "easy_ranking";
-    else if (level == 2) ranking_name = "normal_ranking";
-    else if (level == 3) ranking_name = "hard_ranking";
+    if (level == 1) ranking_name = "ranking_easy";
+    else if (level == 2) ranking_name = "ranking_normal";
+    else if (level == 3) ranking_name = "ranking_hard";
 
     /* 結果とランキングを比較*/
     var target_ranking = ranking[ranking_name];
     var insert_index = null;
     for (var i = target_ranking.length-1; i >= 0; i--){
-        if (result < target_ranking[i][1]) insert_index = i;
+        if (move_count < target_ranking[i][1]) insert_index = i;
         else break;
     }
     if (insert_index == null) return;   // 記録を超えていない場合は終了
 
-    /* ランキングを更新 */
+    //※※※ バグ ※※※ すべてのランキングが同時に更新してしまう
+    //※※※ バグ ※※※ ランキング更新後に更新後のデータがHTMLに表示されない
+
+    console.log(ranking);
+    /* js上でランキングを更新 */
     for (var i = target_ranking.length-1; i > 0; i--){
         target_ranking[i] = target_ranking[i-1];
         if (insert_index == i-1){
-            target_ranking[i-1] = ["Name", result];
+            target_ranking[i-1] = ["Name", move_count];
             break;
         }
     }
-    ranking[ranking_name] = target_ranking;            // js上のデータを更新
-    window.sessionStorage.setItem("ranking", ranking); // キャッシュ上のデータを更新
 
-    /* 表示 */
-    console.log(ranking)
+    /* キャッシュ上のデータを更新 */
+    window.sessionStorage.setItem("ranking", ranking);
+    console.log(ranking);
+
+    /* ランキングデータを表示 */
+    show_ranking();
+}
+
+function show_ranking(){
+    for (key in ranking){
+        var rank_k = ranking[key];
+        for (var j = 0; j < rank_k.length; j++){
+            var id = key + "_" + (j+1);                      // 表示する対象のHTMLのID
+            var string = rank_k[j][0] + "　" + rank_k[j][1]; // ランキングに表示する文字
+            document.getElementById(id).innerHTML = string;  // HTMLコンテンツに文字の挿入
+        }
+    }
 }
 
 /*=========================================================================*/
