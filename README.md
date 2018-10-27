@@ -20,6 +20,9 @@
 - JavaScriptが動作するブラウザ
 
 ## Install (Windows10)
+- このリンクをクリック [https://lisl-tut.github.io/gradient_descent_game2/](https://lisl-tut.github.io/gradient_descent_game2/)
+
+オフライン環境で動かすなら
 - [zipファイル](https://github.com/lisl-tut/gradient_descent_game2/archive/master.zip)をダウンロードして解凍。
 - 解凍した中にあるindex.htmlをブラウザで開く
 
